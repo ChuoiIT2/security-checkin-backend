@@ -1,11 +1,19 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import appConfig from 'src/configs/app.config';
+import authConfig from 'src/configs/auth.config';
 
-import { AppController } from '../../app.controller';
-import { AppService } from '../../app.service';
+import { AppController } from './app.controller';
 
 @Module({
-  imports: [],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [appConfig, authConfig],
+      envFilePath: ['.env.development', '.env.local'],
+    }),
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [Logger],
 })
 export class AppModule {}
