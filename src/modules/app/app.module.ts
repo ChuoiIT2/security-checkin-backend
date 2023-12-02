@@ -1,10 +1,12 @@
 import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 import appConfig from 'src/configs/app.config';
 import authConfig from 'src/configs/auth.config';
 import databaseConfig from 'src/configs/database.config';
 import { DatabaseModule } from 'src/database/database.module';
+import { GlobalExceptionFilter } from 'src/filters/global-exception.filter';
 import { ResponseInterceptor } from 'src/interceptors/response.interceptor';
 
 import { UsersModule } from '../users/users.module';
@@ -23,6 +25,10 @@ import { AppController } from './app.controller';
   controllers: [AppController],
   providers: [
     Logger,
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter,
+    },
     {
       provide: APP_INTERCEPTOR,
       useClass: ResponseInterceptor,
