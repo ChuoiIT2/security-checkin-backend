@@ -16,7 +16,6 @@ import { AuthService } from './auth.service';
       useFactory: async (configService: ConfigService<IAuthConfig>) => ({
         secret: configService.get('jwtSecretKey'),
         signOptions: {
-          algorithm: configService.get('jwtAlgorithm'),
           expiresIn: configService.get('jwtShortExpiresIn'),
         },
       }),
