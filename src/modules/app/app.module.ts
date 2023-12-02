@@ -1,7 +1,6 @@
 import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
-import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 import appConfig from 'src/configs/app.config';
 import authConfig from 'src/configs/auth.config';
 import databaseConfig from 'src/configs/database.config';

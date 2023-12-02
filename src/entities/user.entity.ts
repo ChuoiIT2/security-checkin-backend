@@ -1,3 +1,4 @@
+import { ERole } from 'src/common/role.enum';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 import { FullAuditedEntity } from './full-audited.entity';
@@ -30,4 +31,7 @@ export class User extends FullAuditedEntity {
 
   @Column({ type: 'timestamp', nullable: true })
   dateOfBirth: Date;
+
+  @Column({ type: 'int', nullable: false })
+  role: ERole;
 }
