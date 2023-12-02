@@ -8,6 +8,7 @@ import { DatabaseModule } from 'src/database/database.module';
 import { GlobalExceptionFilter } from 'src/filters/global-exception.filter';
 import { ResponseInterceptor } from 'src/interceptors/response.interceptor';
 
+import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../users/users.module';
 import { AppController } from './app.controller';
 
@@ -19,6 +20,7 @@ import { AppController } from './app.controller';
       envFilePath: ['.env.development', '.env.local'],
     }),
     DatabaseModule,
+    AuthModule,
     UsersModule,
   ],
   controllers: [AppController],
