@@ -12,7 +12,8 @@ export class LocationService {
     private readonly locationRepository: Repository<Location>,
   ) {}
 
-  async create(newLocation: CreateLocationDto) {
-    return await this.locationRepository.save(newLocation);
+  async create(createLocationDto: CreateLocationDto) {
+    createLocationDto.qrCode = JSON.stringify(createLocationDto);
+    return await this.locationRepository.save(createLocationDto);
   }
 }
