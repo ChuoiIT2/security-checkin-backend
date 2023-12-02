@@ -1,7 +1,9 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+import { FullAuditedEntity } from './full-audited.entity';
+
 @Entity('locations')
-export class Location {
+export class Location extends FullAuditedEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
