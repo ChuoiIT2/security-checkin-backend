@@ -6,20 +6,43 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { QueryFailedError } from 'typeorm';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
-  catch(error: HttpException, host: ArgumentsHost) {
+  catch(
+    exception: HttpException | QueryFailedError | Error,
+    host: ArgumentsHost,
+  ) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    const status = error.getStatus() || HttpStatus.INTERNAL_SERVER_ERROR;
-    const message = error.message || 'Internal server error';
-
-    response.status(status).json({
+    let responseBody: any = {
       data: false,
-      code: status,
-      message,
-    });
+      code: HttpStatus.INTERNAL_SERVER_ERROR,
+      message: 'Internal server error',
+    };
+
+    if (exception instanceof HttpException) {
+      responseBody = {
+        data: false,
+        code: exception.getStatus(),
+        message: exception.message,
+      };
+    } else if (exception instanceof QueryFailedError) {
+      responseBody = {
+        data: false,
+        code: HttpStatus.BAD_REQUEST,
+        message: exception.message,
+      };
+    } else {
+      responseBody = {
+        data: false,
+        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: exception.message,
+      };
+    }
+
+    response.status(responseBody.code).json(responseBody);
   }
 }
