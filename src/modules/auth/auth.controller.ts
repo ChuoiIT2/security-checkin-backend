@@ -8,6 +8,7 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { LoginDto, LoginResponseDto } from './dto/login.dto';
 import { RegisterDto, RegisterResponseDto } from './dto/register.dto';
 
@@ -36,5 +37,18 @@ export class AuthController {
   })
   async register(@Body(new ValidationPipe()) registerDto: RegisterDto) {
     return this.authService.register(registerDto);
+  }
+
+  @Post('/forgot-password')
+  @ApiOperation({ summary: 'Forgot password' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: ForgotPasswordDto,
+    description: 'Forgot password success',
+  })
+  async forgotPassword(
+    @Body(new ValidationPipe()) forgotPasswordDto: ForgotPasswordDto,
+  ) {
+    return this.authService.forgotPassword(forgotPasswordDto);
   }
 }

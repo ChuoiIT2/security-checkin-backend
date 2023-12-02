@@ -7,6 +7,7 @@ import { IAuthConfig } from 'src/configs/auth.config';
 import { ErrorMessages } from 'src/configs/constant.config';
 
 import { UsersService } from '../users/users.service';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { LoginDto, LoginResponseDto } from './dto/login.dto';
 import { RegisterDto, RegisterResponseDto } from './dto/register.dto';
 
@@ -50,7 +51,10 @@ export class AuthService {
       );
     }
 
-    registerDto.password = bcrypt.hashSync(registerDto.password, 10);
+    registerDto.password = bcrypt.hashSync(
+      registerDto.password,
+      this.configService.get('bcryptSalt'),
+    );
     const newUser = await this.usersService.create(registerDto);
 
     delete newUser.password;
@@ -58,6 +62,34 @@ export class AuthService {
     return {
       accessToken: await this.generateToken(newUser),
       user: newUser,
+    };
+  }
+
+  async forgotPassword({ email, newPassword }: ForgotPasswordDto) {
+    const user = await this.usersService.findWithEmail(email);
+
+    if (!user) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          message: ErrorMessages.USER_NOT_FOUND,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    user.password = bcrypt.hashSync(
+      newPassword,
+      this.configService.get('bcryptSalt'),
+    );
+
+    await this.usersService.create(user);
+
+    delete user.password;
+
+    return {
+      accessToken: await this.generateToken(user),
+      user,
     };
   }
 
