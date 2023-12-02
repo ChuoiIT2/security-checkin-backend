@@ -1,4 +1,3 @@
-// createUser.dto.ts
 import {
   IsDateString,
   IsEmail,
@@ -28,19 +27,19 @@ export class CreateUserDto {
 
   @IsOptional()
   @IsString()
-  phoneNumber: string;
+  phoneNumber?: string;
 
   @IsOptional()
   @IsString()
-  imageUrl: string;
+  imageUrl?: string;
 
   @IsOptional()
   @IsString()
-  gender: string;
+  gender?: string;
 
   @IsOptional()
   @IsDateString()
-  dateOfBirth: Date;
+  dateOfBirth?: Date;
 
   @IsNotEmpty()
   @IsInt()

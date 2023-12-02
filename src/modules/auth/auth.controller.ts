@@ -9,6 +9,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
 import { LoginDto, LoginResponseDto } from './dto/login.dto';
+import { RegisterDto, RegisterResponseDto } from './dto/register.dto';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -24,5 +25,16 @@ export class AuthController {
   })
   async login(@Body(new ValidationPipe()) loginDto: LoginDto) {
     return this.authService.login(loginDto);
+  }
+
+  @Post('/register')
+  @ApiOperation({ summary: 'Register' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    type: RegisterResponseDto,
+    description: 'Register success',
+  })
+  async register(@Body(new ValidationPipe()) registerDto: RegisterDto) {
+    return this.authService.register(registerDto);
   }
 }

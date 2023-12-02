@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 
+import { CreateUserDto } from './dto/create-user.dto';
 import { GetAllUserDto } from './dto/get-all-user.dto';
 
 @Injectable()
@@ -70,5 +71,9 @@ export class UsersService {
     }
 
     return qb.getOne();
+  }
+
+  create(createUser: CreateUserDto) {
+    return this.userRepository.save(createUser);
   }
 }
