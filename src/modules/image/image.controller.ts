@@ -6,7 +6,13 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiSecurity,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ApiOkResponseCommon } from 'src/common/common-swagger-response.dto';
 
 import { AuthGuard } from '../auth/guards/auth.guard';
@@ -23,6 +29,19 @@ export class ImageController {
   @Post('/upload')
   @UseInterceptors(FileInterceptor('image'))
   @ApiOperation({ summary: 'Upload image' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        image: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+      required: ['image'],
+    },
+  })
   @ApiOkResponseCommon(UploadImageResponseDto)
   uploadImage(@UploadedFile() file: Express.Multer.File) {
     return this.imageService.uploadFile(file);
