@@ -1,5 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import {
+  IPaginationOptions,
+  Pagination,
+  paginate,
+} from 'nestjs-typeorm-paginate';
 import { ERole } from 'src/common/role.enum';
 import { CheckIn } from 'src/entities/check-in.entity';
 import { User } from 'src/entities/user.entity';
@@ -18,8 +23,11 @@ export class CheckInsService {
     private readonly locationsService: LocationsService,
   ) {}
 
-  async getAll(userInfo: User) {
-    const checkIns = await this.checkInRepository
+  async getAll(
+    options: IPaginationOptions,
+    userInfo: User,
+  ): Promise<Pagination<CheckIn>> {
+    const checkIns = this.checkInRepository
       .createQueryBuilder('checkIn')
       .leftJoinAndSelect('checkIn.location', 'location')
       .leftJoinAndSelect('checkIn.user', 'user')
@@ -39,12 +47,11 @@ export class CheckInsService {
       ]);
 
     if (userInfo.role === ERole.USER) {
-      const result = await checkIns
-        .where('user.id = :id', { id: userInfo.id })
-        .getMany();
-      return result;
+      const qb = checkIns.where('user.id = :id', { id: userInfo.id });
+
+      return paginate<CheckIn>(qb, options);
     } else {
-      return await checkIns.getMany();
+      return paginate<CheckIn>(checkIns, options);
     }
   }
 
