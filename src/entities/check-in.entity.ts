@@ -1,10 +1,11 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
+import { FullAuditedEntity } from './full-audited.entity';
 import { Location } from './location.entity';
 import { User } from './user.entity';
 
 @Entity('check-ins')
-export class CheckIn {
+export class CheckIn extends FullAuditedEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
