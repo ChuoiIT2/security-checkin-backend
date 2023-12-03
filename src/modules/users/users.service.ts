@@ -76,4 +76,11 @@ export class UsersService {
   create(createUser: CreateUserDto) {
     return this.userRepository.save(createUser);
   }
+
+  async remove(id: number) {
+    const user = await this.findOne(id);
+    const result = await this.userRepository.softDelete(user.id);
+
+    return !!result;
+  }
 }
