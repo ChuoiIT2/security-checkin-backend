@@ -14,17 +14,17 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetPaginatedDto } from 'src/common/get-paginated.dto';
 
 import { CreateLocationDto } from './dto/create-location.dto';
-import { LocationService } from './location.service';
+import { LocationsService } from './location.service';
 
 @Controller('location')
 @ApiTags('location')
-export class LocationController {
-  constructor(private readonly locationService: LocationService) {}
+export class LocationsController {
+  constructor(private readonly locationsService: LocationsService) {}
 
   @Get('/get-all')
   @ApiOperation({ summary: 'Get all location' })
   async getAll(@Query() options: GetPaginatedDto) {
-    return await this.locationService.getAll(options);
+    return await this.locationsService.getAll(options);
   }
 
   @Post('/create')
@@ -34,7 +34,7 @@ export class LocationController {
     description: 'Create location success',
   })
   async create(@Body(new ValidationPipe()) newLocation: CreateLocationDto) {
-    return await this.locationService.create(newLocation);
+    return await this.locationsService.create(newLocation);
   }
 
   @Get(':id')
@@ -44,7 +44,7 @@ export class LocationController {
     description: 'Get one location success',
   })
   async getOne(@Param('id', ParseIntPipe) id: number) {
-    return await this.locationService.getOne(id);
+    return await this.locationsService.getOne(id);
   }
 
   @Delete(':id')
@@ -54,6 +54,6 @@ export class LocationController {
     description: 'Delete one location success',
   })
   async remove(@Param('id', ParseIntPipe) id: number) {
-    return await this.locationService.remove(id);
+    return await this.locationsService.remove(id);
   }
 }

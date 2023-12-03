@@ -11,7 +11,7 @@ import { Repository } from 'typeorm';
 import { CreateLocationDto } from './dto/create-location.dto';
 
 @Injectable()
-export class LocationService {
+export class LocationsService {
   constructor(
     @InjectRepository(Location)
     private readonly locationRepository: Repository<Location>,
