@@ -34,7 +34,9 @@ export class LocationsService {
 
   async create(createLocationDto: CreateLocationDto) {
     createLocationDto.qrCode = JSON.stringify(createLocationDto);
-    return await this.locationRepository.save(createLocationDto);
+    const result = await this.locationRepository.save(createLocationDto);
+
+    return !!result;
   }
 
   async getOne(id: number) {
