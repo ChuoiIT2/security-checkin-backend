@@ -71,7 +71,7 @@ export class CheckInsService {
     const userId = createCheckInDto.userId;
     const locationId = createCheckInDto.locationId;
 
-    const user = await this.usersService.findOne(userId);
+    const user = await this.usersService.findById(userId);
     const location = await this.locationsService.getOne(locationId);
 
     if (!user) {

@@ -1,5 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import {
+  IPaginationOptions,
+  Pagination,
+  paginate,
+} from 'nestjs-typeorm-paginate';
+import { ERole } from 'src/common/role.enum';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 
@@ -12,8 +18,20 @@ export class UsersService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  async findAll(): Promise<GetAllUserDto[]> {
-    const users: GetAllUserDto[] = await this.userRepository
+  async findAll(
+    userInfo: User,
+    options: IPaginationOptions,
+  ): Promise<Pagination<GetAllUserDto>> {
+    if (userInfo.role !== ERole.ADMIN) {
+      throw new HttpException(
+        {
+          code: HttpStatus.FORBIDDEN,
+          message: 'You are not allowed to access this resource',
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    }
+    const qb = await this.userRepository
       .createQueryBuilder('user')
       .select([
         'user.id',
@@ -24,13 +42,12 @@ export class UsersService {
         'user.gender',
         'user.dateOfBirth',
         'user.role',
-      ])
-      .getMany();
+      ]);
 
-    return users;
+    return paginate<GetAllUserDto>(qb, options);
   }
 
-  async findOne(id: number) {
+  async findOne(userInfo: User, id: number) {
     const user = this.userRepository
       .createQueryBuilder('user')
       .where('user.id = :id', { id })
@@ -47,6 +64,37 @@ export class UsersService {
         HttpStatus.NOT_FOUND,
       );
     }
+
+    if (userInfo.role !== ERole.ADMIN && userInfo.id !== result.id) {
+      throw new HttpException(
+        {
+          code: HttpStatus.FORBIDDEN,
+          message: 'You are not allowed to access this resource',
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    }
+    return result;
+  }
+
+  async findById(id: number) {
+    const user = this.userRepository
+      .createQueryBuilder('user')
+      .where('user.id = :id', { id })
+      .select('user');
+
+    const result = await user.getOne();
+
+    if (!result) {
+      throw new HttpException(
+        {
+          code: HttpStatus.NOT_FOUND,
+          message: 'User not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     return result;
   }
 
@@ -77,9 +125,19 @@ export class UsersService {
     return this.userRepository.save(createUser);
   }
 
-  async remove(id: number) {
-    const user = await this.findOne(id);
+  async remove(userInfo: User, id: number) {
+    const user = await this.findById(id);
     const result = await this.userRepository.softDelete(user.id);
+
+    if (userInfo.role !== ERole.ADMIN) {
+      throw new HttpException(
+        {
+          code: HttpStatus.FORBIDDEN,
+          message: 'You are not allowed to access this resource',
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    }
 
     return !!result;
   }

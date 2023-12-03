@@ -2,6 +2,37 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { ERole } from 'src/common/role.enum';
 
+export class UserDto {
+  @ApiProperty()
+  id: number;
+
+  @ApiProperty()
+  email: string;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  username: string;
+
+  @ApiProperty()
+  phoneNumber: string;
+
+  @ApiProperty()
+  imageUrl: string;
+
+  @ApiProperty()
+  gender: string;
+
+  @ApiProperty()
+  dateOfBirth: Date;
+
+  @ApiProperty({
+    enum: ERole,
+    enumName: 'ERole', // Assuming ERole is an enum
+  })
+  role: ERole;
+}
 export class LoginDto {
   @ApiProperty()
   @IsEmail()
@@ -22,15 +53,5 @@ export class LoginResponseDto {
   accessToken: string;
 
   @ApiProperty()
-  user: {
-    id: number;
-    email: string;
-    name: string;
-    username: string;
-    phoneNumber: string;
-    imageUrl: string;
-    gender: string;
-    dateOfBirth: Date;
-    role: ERole;
-  };
+  user: UserDto;
 }
