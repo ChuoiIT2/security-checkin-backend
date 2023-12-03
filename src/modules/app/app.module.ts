@@ -10,6 +10,7 @@ import { ResponseInterceptor } from 'src/interceptors/response.interceptor';
 
 import { AuthModule } from '../auth/auth.module';
 import { CheckInsModule } from '../check-ins/check-ins.module';
+import { ImageModule } from '../image/image.module';
 import { LocationsModule } from '../locations/location.module';
 import { UsersModule } from '../users/users.module';
 import { AppController } from './app.controller';
@@ -26,6 +27,7 @@ import { AppController } from './app.controller';
     UsersModule,
     LocationsModule,
     CheckInsModule,
+    ImageModule,
   ],
   controllers: [AppController],
   providers: [
