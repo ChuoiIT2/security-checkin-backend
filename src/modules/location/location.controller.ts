@@ -1,8 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
+  Param,
+  ParseIntPipe,
   Post,
   Query,
   ValidationPipe,
@@ -28,10 +31,29 @@ export class LocationController {
   @ApiOperation({ summary: 'Create location' })
   @ApiResponse({
     status: HttpStatus.CREATED,
-    type: CreateLocationDto,
     description: 'Create location success',
   })
   async create(@Body(new ValidationPipe()) newLocation: CreateLocationDto) {
     return await this.locationService.create(newLocation);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get one location' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Get one location success',
+  })
+  async getOne(@Param('id', ParseIntPipe) id: number) {
+    return await this.locationService.getOne(id);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete one location' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Delete one location success',
+  })
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.locationService.remove(id);
   }
 }
