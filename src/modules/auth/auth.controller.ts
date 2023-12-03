@@ -1,11 +1,6 @@
-import {
-  Body,
-  Controller,
-  HttpStatus,
-  Post,
-  ValidationPipe,
-} from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponseCommon } from 'src/common/common-swagger-response.dto';
 
 import { AuthService } from './auth.service';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
@@ -19,33 +14,21 @@ export class AuthController {
 
   @Post('/login')
   @ApiOperation({ summary: 'Login' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    type: LoginResponseDto,
-    description: 'Login success',
-  })
+  @ApiOkResponseCommon(LoginResponseDto, 'Login success')
   async login(@Body(new ValidationPipe()) loginDto: LoginDto) {
     return this.authService.login(loginDto);
   }
 
   @Post('/register')
   @ApiOperation({ summary: 'Register' })
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    type: RegisterResponseDto,
-    description: 'Register success',
-  })
+  @ApiOkResponseCommon(RegisterResponseDto, 'Register success')
   async register(@Body(new ValidationPipe()) registerDto: RegisterDto) {
     return this.authService.register(registerDto);
   }
 
   @Post('/forgot-password')
   @ApiOperation({ summary: 'Forgot password' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    type: ForgotPasswordDto,
-    description: 'Forgot password success',
-  })
+  @ApiOkResponseCommon(LoginResponseDto, '')
   async forgotPassword(
     @Body(new ValidationPipe()) forgotPasswordDto: ForgotPasswordDto,
   ) {

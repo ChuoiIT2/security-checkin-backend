@@ -39,7 +39,10 @@ export class RegisterDto {
 }
 
 export class RegisterResponseDto {
+  @ApiProperty()
   accessToken: string;
+
+  @ApiProperty()
   user: {
     id: number;
     email: string;

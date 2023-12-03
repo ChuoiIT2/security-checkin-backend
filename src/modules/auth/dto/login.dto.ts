@@ -18,7 +18,10 @@ export class LoginDto {
 }
 
 export class LoginResponseDto {
+  @ApiProperty()
   accessToken: string;
+
+  @ApiProperty()
   user: {
     id: number;
     email: string;
