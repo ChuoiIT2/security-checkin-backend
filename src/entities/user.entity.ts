@@ -1,6 +1,7 @@
 import { ERole } from 'src/common/role.enum';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
+import { CheckIn } from './check-in.entity';
 import { FullAuditedEntity } from './full-audited.entity';
 
 @Entity('users')
@@ -34,4 +35,7 @@ export class User extends FullAuditedEntity {
 
   @Column({ type: 'int', nullable: false })
   role: ERole;
+
+  @OneToMany(() => CheckIn, (checkIn) => checkIn.user)
+  checkIns: CheckIn[];
 }

@@ -11,4 +11,4 @@ import { LocationService } from './location.service';
   providers: [LocationService],
   exports: [LocationService],
 })
-export class LocationModule {}
+export class LocationsModule {}

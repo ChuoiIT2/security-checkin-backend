@@ -9,7 +9,8 @@ import { GlobalExceptionFilter } from 'src/filters/global-exception.filter';
 import { ResponseInterceptor } from 'src/interceptors/response.interceptor';
 
 import { AuthModule } from '../auth/auth.module';
-import { LocationModule } from '../location/location.module';
+import { CheckInsModule } from '../check-ins/check-ins.module';
+import { LocationsModule } from '../locations/location.module';
 import { UsersModule } from '../users/users.module';
 import { AppController } from './app.controller';
 
@@ -23,7 +24,8 @@ import { AppController } from './app.controller';
     DatabaseModule,
     AuthModule,
     UsersModule,
-    LocationModule,
+    LocationsModule,
+    CheckInsModule,
   ],
   controllers: [AppController],
   providers: [

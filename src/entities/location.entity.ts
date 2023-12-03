@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
+import { CheckIn } from './check-in.entity';
 import { FullAuditedEntity } from './full-audited.entity';
 
 @Entity('locations')
@@ -24,4 +25,7 @@ export class Location extends FullAuditedEntity {
 
   @Column({ type: 'varchar', nullable: false })
   qrCode: string;
+
+  @OneToMany(() => CheckIn, (checkIn) => checkIn.location)
+  checkIns: CheckIn[];
 }
