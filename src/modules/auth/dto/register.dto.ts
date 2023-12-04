@@ -45,5 +45,8 @@ export class RegisterResponseDto {
   accessToken: string;
 
   @ApiProperty()
+  refreshToken: string;
+
+  @ApiProperty()
   user: UserDto;
 }

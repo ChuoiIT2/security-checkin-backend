@@ -2,12 +2,14 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { ERole } from 'src/common/role.enum';
 import { IAppConfig } from 'src/configs/app.config';
 import { IAuthConfig } from 'src/configs/auth.config';
 import { ErrorMessages } from 'src/configs/constant.config';
 
 import { UsersService } from '../users/users.service';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { IJwtPayload } from './dto/jwt-payload.interface';
 import { LoginDto, LoginResponseDto } from './dto/login.dto';
 import { RegisterDto, RegisterResponseDto } from './dto/register.dto';
 
@@ -36,6 +38,7 @@ export class AuthService {
 
     return {
       accessToken: await this.generateToken(user, loginDto.isRemember),
+      refreshToken: await this.generateToken(user, true),
       user,
     };
   }
@@ -61,6 +64,7 @@ export class AuthService {
 
     return {
       accessToken: await this.generateToken(newUser),
+      refreshToken: await this.generateToken(newUser, true),
       user: newUser,
     };
   }
@@ -82,6 +86,8 @@ export class AuthService {
       newPassword,
       this.configService.get('bcryptSalt'),
     );
+    // by default should be user
+    user.role = ERole.USER;
 
     await this.usersService.create(user);
 
@@ -89,7 +95,29 @@ export class AuthService {
 
     return {
       accessToken: await this.generateToken(user),
+      refreshToken: await this.generateToken(user, true),
       user,
+    };
+  }
+
+  async refreshToken(refreshToken: string): Promise<LoginResponseDto> {
+    const payload =
+      await this.jwtService.verifyAsync<IJwtPayload>(refreshToken);
+
+    if (!payload) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.UNAUTHORIZED,
+          message: ErrorMessages.INVALID_TOKEN,
+        },
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    return {
+      accessToken: await this.generateToken(payload.user),
+      refreshToken: await this.generateToken(payload.user, true),
+      user: payload.user,
     };
   }
 
@@ -97,7 +125,7 @@ export class AuthService {
     const plainObject = JSON.parse(JSON.stringify(user));
     return this.jwtService.signAsync(
       {
-        ...plainObject,
+        user: plainObject,
       },
       {
         expiresIn: isLongExpires

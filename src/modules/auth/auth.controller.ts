@@ -1,5 +1,5 @@
 import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiOkResponseCommon } from 'src/common/common-swagger-response.dto';
 
 import { AuthService } from './auth.service';
@@ -33,5 +33,22 @@ export class AuthController {
     @Body(new ValidationPipe()) forgotPasswordDto: ForgotPasswordDto,
   ) {
     return this.authService.forgotPassword(forgotPasswordDto);
+  }
+
+  @Post('/refresh-token')
+  @ApiOperation({ summary: 'Refresh token' })
+  @ApiOkResponseCommon(LoginResponseDto, '')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        refreshToken: {
+          type: 'string',
+        },
+      },
+    },
+  })
+  async refreshToken(@Body('refreshToken') refreshToken: string) {
+    return this.authService.refreshToken(refreshToken);
   }
 }
