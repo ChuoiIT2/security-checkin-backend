@@ -19,7 +19,7 @@ export class ImageService {
           resolve({
             id: result.public_id,
             url: result.secure_url,
-            secure_url: result.secure_url,
+            secureUrl: result.secure_url,
             width: result.width,
             height: result.height,
             format: result.format,

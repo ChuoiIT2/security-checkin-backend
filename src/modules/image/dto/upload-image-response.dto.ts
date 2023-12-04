@@ -8,7 +8,7 @@ export class UploadImageResponseDto {
   url: string;
 
   @ApiProperty()
-  secure_url: string;
+  secureUrl: string;
 
   @ApiProperty()
   width: number;
