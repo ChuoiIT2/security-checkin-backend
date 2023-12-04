@@ -30,8 +30,8 @@ export class LocationsService {
         'location.longitude',
         'location.address',
         'location.description',
-        'location.qrCode',
-      ]);
+      ])
+      .orderBy('location.id', 'DESC');
     return paginate<Location>(qb, options);
   }
 
@@ -86,7 +86,6 @@ export class LocationsService {
       .createQueryBuilder('location')
       .where('location.id = :id', { id })
       .select('location');
-
     const result = await location.getOne();
 
     if (!result) {
