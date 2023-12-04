@@ -11,6 +11,7 @@ import { Repository } from 'typeorm';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { GetAllUserDto } from './dto/get-all-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -121,8 +122,46 @@ export class UsersService {
     return qb.getOne();
   }
 
-  create(createUser: CreateUserDto) {
+  async create(createUser: CreateUserDto) {
     return this.userRepository.save(createUser);
+  }
+
+  async update(userInfo: User, id: number, updateUser: UpdateUserDto) {
+    const user = await this.findById(id);
+
+    if (userInfo.role !== ERole.ADMIN && userInfo.id !== user.id) {
+      throw new HttpException(
+        {
+          code: HttpStatus.FORBIDDEN,
+          message: 'You are not allowed to access this resource',
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    if (userInfo.role !== ERole.ADMIN && updateUser.role) {
+      throw new HttpException(
+        {
+          code: HttpStatus.FORBIDDEN,
+          message: 'You are not allowed to access this resource',
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    if (updateUser.role && !Object.values(ERole).includes(updateUser.role)) {
+      throw new HttpException(
+        {
+          code: HttpStatus.BAD_REQUEST,
+          message: 'Role is not valid',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const result = await this.userRepository.update(id, updateUser);
+
+    return !!result;
   }
 
   async remove(userInfo: User, id: number) {

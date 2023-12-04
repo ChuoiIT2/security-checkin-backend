@@ -5,10 +5,13 @@ import {
   Pagination,
   paginate,
 } from 'nestjs-typeorm-paginate';
+import { ERole } from 'src/common/role.enum';
 import { Location } from 'src/entities/location.entity';
+import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 
 import { CreateLocationDto } from './dto/create-location.dto';
+import { UpdateLocationDto } from './dto/update-location.dto';
 
 @Injectable()
 export class LocationsService {
@@ -32,9 +35,48 @@ export class LocationsService {
     return paginate<Location>(qb, options);
   }
 
-  async create(createLocationDto: CreateLocationDto) {
+  async create(userInfo: User, createLocationDto: CreateLocationDto) {
+    if (userInfo.role !== ERole.ADMIN) {
+      throw new HttpException(
+        {
+          code: HttpStatus.FORBIDDEN,
+          message: 'You are not authorized to create location',
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    }
     createLocationDto.qrCode = JSON.stringify(createLocationDto);
     const result = await this.locationRepository.save(createLocationDto);
+
+    return !!result;
+  }
+
+  async update(
+    userInfo: User,
+    id: number,
+    updateLocationDto: UpdateLocationDto,
+  ) {
+    if (userInfo.role !== ERole.ADMIN) {
+      throw new HttpException(
+        {
+          code: HttpStatus.FORBIDDEN,
+          message: 'You are not authorized to create location',
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    }
+    const location = await this.getOne(id);
+    Object.assign(location, updateLocationDto);
+    location.qrCode = JSON.stringify({
+      id: location.id,
+      name: location.name,
+      longitude: location.longitude,
+      latitude: location.latitude,
+      address: location.address,
+      description: location.description,
+    });
+
+    const result = await this.locationRepository.save(location);
 
     return !!result;
   }

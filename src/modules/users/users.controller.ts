@@ -1,9 +1,11 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
   Param,
   ParseIntPipe,
+  Put,
   Query,
   Request,
   UseGuards,
@@ -18,6 +20,7 @@ import { GetPaginatedDto } from 'src/common/get-paginated.dto';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { GetAllUserDto } from './dto/get-all-user.dto';
 import { GetDetailUserDto } from './dto/get-detail-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -44,8 +47,8 @@ export class UsersController {
   }
 
   @UseGuards(AuthGuard)
-  @ApiOperation({ summary: 'Get user by id' })
   @Get(':id')
+  @ApiOperation({ summary: 'Get user by id' })
   @ApiOkResponseCommon(GetDetailUserDto)
   findOne(@Request() req, @Param('id', ParseIntPipe) id: number) {
     const userInfo = req.user;
@@ -53,8 +56,21 @@ export class UsersController {
   }
 
   @UseGuards(AuthGuard)
-  @ApiOperation({ summary: 'Delete user by id' })
+  @Put(':id')
+  @ApiOperation({ summary: 'Update user by id' })
+  @ApiOkResponseCommon(Boolean)
+  update(
+    @Request() req,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    const userInfo = req.user;
+    return this.usersService.update(userInfo, id, updateUserDto);
+  }
+
+  @UseGuards(AuthGuard)
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete user by id' })
   @ApiOkResponseCommon(Boolean)
   remove(@Request() req, @Param('id', ParseIntPipe) id: number) {
     const userInfo = req.user;
