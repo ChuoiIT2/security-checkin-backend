@@ -23,7 +23,7 @@ export class Location extends FullAuditedEntity {
   @Column({ type: 'varchar', nullable: true })
   description: string;
 
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', nullable: false, select: false })
   qrCode: string;
 
   @OneToMany(() => CheckIn, (checkIn) => checkIn.location)
