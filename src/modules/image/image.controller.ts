@@ -2,7 +2,6 @@ import {
   Controller,
   Post,
   UploadedFile,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -15,7 +14,6 @@ import {
 } from '@nestjs/swagger';
 import { ApiOkResponseCommon } from 'src/common/common-swagger-response.dto';
 
-import { AuthGuard } from '../auth/guards/auth.guard';
 import { UploadImageResponseDto } from './dto/upload-image-response.dto';
 import { ImageService } from './image.service';
 
@@ -25,7 +23,6 @@ import { ImageService } from './image.service';
 export class ImageController {
   constructor(private readonly imageService: ImageService) {}
 
-  @UseGuards(AuthGuard)
   @Post('/upload')
   @UseInterceptors(FileInterceptor('image'))
   @ApiOperation({ summary: 'Upload image' })
