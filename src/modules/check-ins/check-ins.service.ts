@@ -44,8 +44,8 @@ export class CheckInsService {
         'user.email',
         'user.phoneNumber',
         'user.name',
-      ]);
-
+      ])
+      .orderBy('checkIn.id', 'DESC');
     if (userInfo.role === ERole.USER) {
       const qb = checkIns.where('user.id = :id', { id: userInfo.id });
 
@@ -58,6 +58,7 @@ export class CheckInsService {
   async create(userInfo: User, createCheckInDto: CreateCheckInDto) {
     if (
       userInfo.role !== ERole.ADMIN &&
+      createCheckInDto.userId &&
       userInfo.id !== createCheckInDto.userId
     ) {
       throw new HttpException(
@@ -68,7 +69,9 @@ export class CheckInsService {
         HttpStatus.FORBIDDEN,
       );
     }
-    const userId = createCheckInDto.userId;
+    const userId = createCheckInDto.userId
+      ? createCheckInDto.userId
+      : userInfo.id;
     const locationId = createCheckInDto.locationId;
 
     const user = await this.usersService.findById(userId);
