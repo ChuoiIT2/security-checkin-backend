@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 
 export class GetAllLocationDto {
   @ApiProperty()
@@ -19,6 +19,6 @@ export class GetAllLocationDto {
   @ApiProperty()
   description: string;
 
-  @ApiProperty()
+  @ApiHideProperty()
   qrCode: string;
 }
