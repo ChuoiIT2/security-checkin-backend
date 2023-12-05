@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import {
   IsDateString,
   IsEmail,
@@ -50,8 +50,9 @@ export class CreateUserDto {
   @IsDateString()
   dateOfBirth?: Date;
 
-  @ApiProperty()
+  @ApiHideProperty()
   @IsNotEmpty()
+  @IsOptional()
   @IsInt()
-  role: ERole;
+  role?: ERole;
 }

@@ -58,6 +58,8 @@ export class AuthService {
       registerDto.password,
       this.configService.get('bcryptSalt'),
     );
+    registerDto.role = ERole.USER;
+
     const newUser = await this.usersService.create(registerDto);
 
     delete newUser.password;

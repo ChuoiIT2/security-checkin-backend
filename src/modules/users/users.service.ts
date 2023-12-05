@@ -43,7 +43,8 @@ export class UsersService {
         'user.gender',
         'user.dateOfBirth',
         'user.role',
-      ]);
+      ])
+      .orderBy('user.id', 'DESC');
 
     return paginate<GetAllUserDto>(qb, options);
   }

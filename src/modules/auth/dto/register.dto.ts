@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsInt, IsString } from 'class-validator';
 import { ERole } from 'src/common/role.enum';
 
@@ -35,9 +35,9 @@ export class RegisterDto {
   @ApiProperty({ required: false })
   dateOfBirth?: Date;
 
-  @ApiProperty()
+  @ApiHideProperty()
   @IsInt()
-  role: ERole;
+  role?: ERole;
 }
 
 export class RegisterResponseDto {
