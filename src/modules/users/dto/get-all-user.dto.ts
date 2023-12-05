@@ -8,6 +8,9 @@ export class GetAllUserDto {
   @ApiProperty({ example: 'user@example.com' })
   email: string;
 
+  @ApiProperty({ example: 'John Doe' })
+  name: string;
+
   @ApiProperty({ example: 'john_doe' })
   username: string;
 

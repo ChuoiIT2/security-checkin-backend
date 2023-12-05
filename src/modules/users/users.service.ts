@@ -37,12 +37,14 @@ export class UsersService {
       .select([
         'user.id',
         'user.email',
+        'user.name',
         'user.username',
         'user.phoneNumber',
         'user.imageUrl',
         'user.gender',
         'user.dateOfBirth',
         'user.role',
+        'user.createdAt',
       ])
       .orderBy('user.id', 'DESC');
 
